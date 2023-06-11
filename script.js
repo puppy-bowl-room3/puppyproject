@@ -2,7 +2,7 @@ const playerContainer = document.getElementById('all-players-container');
 const newPlayerFormContainer = document.getElementById('new-player-form');
 
 // Add your cohort name to the cohortName variable below, replacing the 'COHORT-NAME' placeholder
-const cohortName = '2302-ACC-CT-WEB-PT-B';
+const cohortName = '2302-ACC-PT-WEB-PT-B';
 // Use the APIURL variable for fetch requests
 const APIURL = `https://fsa-puppy-bowl.herokuapp.com/api/${cohortName}/players`;
 
@@ -63,12 +63,19 @@ const addNewPlayer = async (playerObj) => {
         console.error('Oops, something went wrong with adding that player!', err);
     }
 };
-
+//remove a puppy player.
 const removePlayer = async (playerId) => {
-    try
-    {
-
-    } catch (err) {
+    console.log('deleting' + id);
+    
+   try {
+   
+    const response = await fetch(`https://fsa-puppy-bowl.herokuapp.com/api/${cohortName}/players/${id}`, {
+        method: `DELETE`,
+    });
+        const result = await response.json();
+        
+        console.log(result);
+      } catch (err) {
         console.error(
             `Whoops, trouble removing player #${playerId} from the roster!`,
             err
