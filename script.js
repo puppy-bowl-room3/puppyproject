@@ -46,25 +46,94 @@ const fetchSinglePlayer = async (playerId) => {
     }
 };
 
-const addNewPlayer = async (playerObj) => {
+const addNewPlayer = async (player) => {
     try {
-        const form = document.createElement("div");
+        //https://www.startpage.com/sp/sxpra?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fd%2Fd1%2FBlue_Merle_Border_Collie._Female.jpg%2F200px-Blue_Merle_Border_Collie._Female.jpg
+        //CohortId
+        // 2302-ACC-CT-WEB-PT-B
+        //posting to the teamid
 
-        form.innerHTML = `
-        <h4>New Player: </h4><br>
-        <p>name:</p> <input type="text name = "name"></input><br>
-        <p>breed:</p> <input type="text name = "breed"></input><br>
-        <p>status:</p> <input type="text name = "status"></input><br>
-        <p>imageUrl:</p> <input type="text name = "imageUrl"></input><br>
-        <p>team:</p> <input type="text name = "team"></input><br>
-        <p>cohortId:</p> <input type="text name = "cohortId"></input><br>
-        `;
-        playerContainer.appendChild(form);
+        const response = await fetch(`${APIURL}/players/${player}`,
+            { method: "POST" });
+        console.log(response);
+        const jsonResponse = await response.json();
+        console.log(jsonResponse);
+        //await init();
     } catch (err) {
         console.error('Oops, something went wrong with adding that player!', err);
     }
 };
 
+
+const renderNewPlayerForm = async () => {
+    try {
+        const form = document.createElement("div");
+        const submit = document.createElement("button");
+        submit.setAttribute("type", "submit");
+        submit.id = "submit-button";
+        submit.innerHTML = "Submit";
+        submit.name = "SUBMIT";
+        submit.type = 'submit';
+        form.innerHTML = `
+            <form>
+                <h4>New Player: </h4><br>
+
+                <label for="name">Name: </label><br>
+                <input type="text" id="name" name="name"></input>
+                <br>
+
+                <label for="breed">Breed: </label><br>
+                <input type="text" id="breed" name="breed"></input>
+                <br>
+
+                <label for="status">Status: </label><br>
+                <input type="text" id="status" name="status"></input>
+                <br>
+
+                <label for="imageUrl">ImageUrl: </label><br>
+                <input type="text" id="imageUrl" name="imageUrl"></input>
+                <br>
+
+                <label for="teamId">Team: </label><br>
+                <input type="text" id="teamId" name="teamId"></input>
+                <br>
+
+                <label for="cohortId">CohortId: </label><br>
+                <input type="text" id="cohortId" name="cohortId"></input>
+                <br>
+                
+            </form>
+        `;
+        async function callAdd() {
+            let name = form.querySelector('#name');
+            let breed = form.querySelector('#breed');
+            let status = form.querySelector('#status');
+            let imageUrl = form.querySelector('#imageUrl');
+            let team = form.querySelector('#teamId');
+            let cohortID = form.querySelector("#cohortId");
+            const player = [{
+                "name": `${name}`,
+                "breed": `${breed}`,
+                "status": `${status}`,
+                "imageUrl": `${imageUrl}`,
+                "createdAt": `${Date.UTC()}`,
+                "updatedAt": `${Date.UTC()}`,
+                "teamId": `${team}`,
+                "cohortId": `${cohortID}`
+            }];
+            await addNewPlayer(player);
+        };
+        playerContainer.classList.add('player-list');
+        playerContainer.appendChild(form);
+        form.appendChild(submit);
+
+        submit.addEventListener('click', () => {
+            callAdd();
+        });
+    } catch (err) {
+        console.error('Uh oh, trouble rendering the new player form!', err);
+    }
+};
 const removePlayer = async (playerId) => {
     console.log('deleting' + id);
 
@@ -117,45 +186,6 @@ const renderAllPlayers = async (playerList) => {
         console.error('Uh oh, trouble rendering players!', err);
     }
 };
-
-
-/**
- * It renders a form to the DOM, and when the form is submitted, it adds a new player to the database,
- * fetches all players from the database, and renders them to the DOM.
- */
-const renderNewPlayerForm = () => {
-    try {
-        const form = document.createElement("div");
-        const renderForm = () => {
-            form.appendChild(form);
-
-            const submit = document.createElement("button");
-            submit.setAttribute("type", "submit");
-            submit.id = "submit-button";
-            submit.innerHTML = "Submit";
-            form.appendChild(submit);
-        }
-
-
-        form.innerHTML = `
-    <form>
-      <label for="name">Name: </label><br>
-      <input type="text" id="name" name="name"><br>
-
-      <label for="breed">Breed: </label><br>
-      <input type="text" id="breed" name="breed"><br>
-
-      <label for="breed">Status: </label><br>
-      <input type="text" id="status" name="status"><br>
-  
-      <label for="imageUrl">ImageUrl: </label><br>
-      <input type="text" id="imageUrl" name="imageUrl"><br>
-    </form>
-  `;
-    } catch (err) {
-        console.error('Uh oh, trouble rendering the new player form!', err);
-    }
-}
 
 const init = async () => {
     renderAllPlayers(await fetchAllPlayers());
