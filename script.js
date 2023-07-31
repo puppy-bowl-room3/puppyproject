@@ -48,19 +48,15 @@ const fetchSinglePlayer = async (playerId) => {
 
 const addNewPlayer = async (player) => {
     try {
-        //https://www.startpage.com/sp/sxpra?url=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fd%2Fd1%2FBlue_Merle_Border_Collie._Female.jpg%2F200px-Blue_Merle_Border_Collie._Female.jpg
-        //CohortId
-        // 2302-ACC-CT-WEB-PT-B
-        //posting to the teamid
-
-        const response = await fetch(`${APIURL}/players/${player}`,
-            { method: "POST" });
-        console.log(response);
-        const jsonResponse = await response.json();
-        console.log(jsonResponse);
-        //await init();
-    } catch (err) {
-        console.error('Oops, something went wrong with adding that player!', err);
+        fetch(`${APIURL}/players`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(player)
+        });
+    } catch (error) {
+        error(`Whoops, trouble adding a new player!`, error);
     }
 };
 
