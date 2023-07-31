@@ -48,18 +48,25 @@ const fetchSinglePlayer = async (playerId) => {
 
 const addNewPlayer = async (player) => {
     try {
-        fetch(`${APIURL}/players`, {
-            method: 'POST',
+        const response = await fetch(`https://fsa-puppy-bowl.herokuapp.com/api/${cohortName}/players/${player.id}`, {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            credentials: "same-origin", // include, *same-origin, omit
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: JSON.stringify(player)
-        });
-    } catch (error) {
-        error(`Whoops, trouble adding a new player!`, error);
+            redirect: "follow", // manual, *follow, error
+            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(player), // body data type must match "Content-Type" header
+            }
+        );
+        const result = await response.json();
+        console.log(result);
+    }
+    catch (err) {
+        console.error('Uh oh, trouble adding a new player!', err);
     }
 };
-
 
 const renderNewPlayerForm = async () => {
     try {
@@ -130,6 +137,7 @@ const renderNewPlayerForm = async () => {
         console.error('Uh oh, trouble rendering the new player form!', err);
     }
 };
+//remove a puppy player.
 const removePlayer = async (playerId) => {
     console.log('deleting' + id);
 
@@ -148,6 +156,7 @@ const removePlayer = async (playerId) => {
         );
     }
 };
+
 
 /**
  * It takes an array of player objects, loops through them, and creates a string of HTML for each
@@ -186,7 +195,7 @@ const renderAllPlayers = async (playerList) => {
 const init = async () => {
     renderAllPlayers(await fetchAllPlayers());
 
-    //renderNewPlayerForm();
+    renderNewPlayerForm();
 }
 
 init();
